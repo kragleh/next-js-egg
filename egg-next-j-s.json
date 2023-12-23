@@ -4,21 +4,22 @@
         "version": "PTDL_v2",
         "update_url": null
     },
-    "exported_at": "2023-01-14T13:48:40+01:00",
+    "exported_at": "2023-12-23T20:54:22+03:00",
     "name": "Next JS",
     "author": "kragleh@rizn.top",
     "description": "Host a Next JS application in seconds!",
     "features": null,
     "docker_images": {
-        "ghcr.io\/parkervcp\/yolks:nodejs_18": "ghcr.io\/parkervcp\/yolks:nodejs_18",
-        "ghcr.io\/parkervcp\/yolks:nodejs_17": "ghcr.io\/parkervcp\/yolks:nodejs_17",
-        "ghcr.io\/parkervcp\/yolks:nodejs_16": "ghcr.io\/parkervcp\/yolks:nodejs_16",
-        "ghcr.io\/parkervcp\/yolks:nodejs_15": "ghcr.io\/parkervcp\/yolks:nodejs_15",
-        "ghcr.io\/parkervcp\/yolks:nodejs_14": "ghcr.io\/parkervcp\/yolks:nodejs_14",
-        "ghcr.io\/parkervcp\/yolks:nodejs_12": "ghcr.io\/parkervcp\/yolks:nodejs_12"
+        "Nodejs 20": "ghcr.io\/parkervcp\/yolks:nodejs_20",
+        "Nodejs 19": "ghcr.io\/parkervcp\/yolks:nodejs_19",
+        "Nodejs 18": "ghcr.io\/parkervcp\/yolks:nodejs_18",
+        "Nodejs 17": "ghcr.io\/parkervcp\/yolks:nodejs_17",
+        "Nodejs 16": "ghcr.io\/parkervcp\/yolks:nodejs_16",
+        "Nodejs 14": "ghcr.io\/parkervcp\/yolks:nodejs_14",
+        "Nodejs 12": "ghcr.io\/parkervcp\/yolks:nodejs_12"
     },
     "file_denylist": [],
-    "startup": "if [[ -d .git ]] && [[ {{AUTO_UPDATE}} == \"1\" ]]; then git pull; fi; if [ -f \/home\/container\/package.json ]; then \/usr\/local\/bin\/npm install; fi; \/usr\/local\/bin\/npm run build; \/usr\/local\/bin\/npx next start -p {{SERVER_PORT}};",
+    "startup": "if [ ! \"$(ls -A \/home\/container)\" ]; then echo -e \"\/home\/container is empty.\\ncloning files into repo\"; if [ -z ${GIT_BRANCH} ]; then echo -e \"cloning default branch\"; git clone ${GIT_URL} \/home\/container; else echo -e \"cloning ${GIT_BRANCH}'\"; git clone --single-branch --branch ${GIT_BRANCH} ${GIT_URL} \/home\/container; fi; else echo -e \"\/home\/container directory is not empty.\"; cd \/home\/container; if [ -d .git ]; then echo -e \".git directory exists\"; git reset --hard; git fetch origin; git checkout ${GIT_BRANCH}; git pull origin ${GIT_BRANCH}; else echo -e \"Not a git repository. Removing existing files and cloning again.\"; rm -rf \/home\/container\/* \/home\/container\/.* 2>\/dev\/null; if [ -n \"${USERNAME}\" ] && [ -n \"${ACCESS_TOKEN}\" ]; then GIT_URL=\"https:\/\/${USERNAME}:${ACCESS_TOKEN}@$(echo -e ${GIT_URL} | cut -d\/ -f3-)\"; fi; git clone ${GIT_URL} \/home\/container; fi; fi; if [ -f \/home\/container\/package.json ]; then \/usr\/local\/bin\/npm install; fi; \/usr\/local\/bin\/npx next ${NODE_RUN_ENV} -p {{SERVER_PORT}};",
     "config": {
         "files": "{}",
         "startup": "{\r\n    \"done\": \"Compiled successfully\"\r\n}",
@@ -27,8 +28,8 @@
     },
     "scripts": {
         "installation": {
-            "script": "#!\/bin\/bash\r\n# Copied from NodeJS App Installation Script\r\n#\r\n# Server Files: \/mnt\/server\r\napt update\r\napt install -y git curl jq file unzip make gcc g++ python python-dev libtool\r\n\r\nmkdir -p \/mnt\/server\r\ncd \/mnt\/server\r\n\r\n## add git ending if it's not on the address\r\nif [[ ${GIT_URL} != *.git ]]; then\r\n    GIT_URL=${GIT_URL}.git\r\nfi\r\n\r\nif [ -z \"${USERNAME}\" ] && [ -z \"${ACCESS_TOKEN}\" ]; then\r\n    echo -e \"using anon api call\"\r\nelse\r\n    GIT_URL=\"https:\/\/${USERNAME}:${ACCESS_TOKEN}@$(echo -e ${GIT_URL} | cut -d\/ -f3-)\"\r\nfi\r\n\r\n## pull git js repo\r\nif [ \"$(ls -A \/mnt\/server)\" ]; then\r\n    echo -e \"\/mnt\/server directory is not empty.\"\r\n    if [ -d .git ]; then\r\n        echo -e \".git directory exists\"\r\n        if [ -f .git\/config ]; then\r\n            echo -e \"loading info from git config\"\r\n            ORIGIN=$(git config --get remote.origin.url)\r\n        else\r\n            echo -e \"files found with no git config\"\r\n            echo -e \"closing out without touching things to not break anything\"\r\n            exit 10\r\n        fi\r\n    fi\r\n\r\n    if [ \"${ORIGIN}\" == \"${GIT_URL}\" ]; then\r\n        echo \"pulling latest from github\"\r\n        git pull\r\n    fi\r\nelse\r\n    echo -e \"\/mnt\/server is empty.\\ncloning files into repo\"\r\n    if [ -z ${GIT_BRANCH} ]; then\r\n        echo -e \"cloning default branch\"\r\n        git clone ${GIT_URL} .\r\n    else\r\n        echo -e \"cloning ${GIT_BRANCH}'\"\r\n        git clone --single-branch --branch ${GIT_BRANCH} ${GIT_URL} .\r\n    fi\r\n\r\nfi\r\n\r\nif [ -f \/mnt\/server\/package.json ]; then\r\n    \/usr\/local\/bin\/npm install --production\r\nfi\r\n\r\necho -e \"install complete\"\r\nexit 0",
-            "container": "node:14-buster-slim",
+            "script": "#!\/bin\/bash\r\n# Copied from NodeJS App Installation Script\r\n#\r\n# Server Files: \/mnt\/server\r\napt update\r\napt install -y git curl jq file unzip make gcc g++ python python-dev libtool\r\n\r\nmkdir -p \/mnt\/server\r\ncd \/mnt\/server\r\n\r\n## add git ending if it's not on the address\r\nif [[ ${GIT_URL} != *.git ]]; then\r\n    GIT_URL=${GIT_URL%\/}  # Remove trailing slash, if any\r\n    GIT_URL=${GIT_URL}.git\r\nfi\r\n\r\nif [ -z \"${USERNAME}\" ] && [ -z \"${ACCESS_TOKEN}\" ]; then\r\n    echo -e \"using anon api call\"\r\nelse\r\n    GIT_URL=\"https:\/\/${USERNAME}:${ACCESS_TOKEN}@$(echo -e ${GIT_URL} | cut -d\/ -f3-)\"\r\nfi\r\n\r\n## Check if the directory is empty or not\r\nif [ ! \"$(ls -A \/mnt\/server)\" ]; then\r\n    echo -e \"\/mnt\/server is empty.\\ncloning files into repo\"\r\n    if [ -z ${GIT_BRANCH} ]; then\r\n        echo -e \"cloning default branch\"\r\n        git clone ${GIT_URL} .\r\n    else\r\n        echo -e \"cloning ${GIT_BRANCH}'\"\r\n        git clone --single-branch --branch ${GIT_BRANCH} ${GIT_URL} .\r\n    fi\r\nelse\r\n    echo -e \"\/mnt\/server directory is not empty.\"\r\n    cd \/mnt\/server\r\n    # Check if it's a Git repository\r\n    if [ -d .git ]; then\r\n        echo -e \".git directory exists\"\r\n        # Reset the changes to avoid conflicts\r\n        git reset --hard\r\n        # Fetch the latest changes\r\n        git fetch origin\r\n        # Checkout the desired branch\r\n        git checkout ${GIT_BRANCH}\r\n        # Pull the latest changes\r\n        git pull origin ${GIT_BRANCH}\r\n    else\r\n        echo -e \"Not a git repository. Removing existing files and cloning again.\"\r\n        rm -rf \/mnt\/server\/* \/mnt\/server\/.* 2>\/dev\/null\r\n        git clone ${GIT_URL} .\r\n    fi\r\nfi\r\n\r\nif [ -f \/mnt\/server\/package.json ]; then\r\n    \/usr\/local\/bin\/npm install --production\r\nfi\r\n\r\necho -e \"install complete\"\r\nexit 0",
+            "container": "node:18-bullseye-slim",
             "entrypoint": "bash"
         }
     },
@@ -81,6 +82,16 @@
             "user_viewable": true,
             "user_editable": true,
             "rules": "nullable|string",
+            "field_type": "text"
+        },
+        {
+            "name": "Node ENV",
+            "description": "NodeJS env to use in `next` command to start the deployment. The choices are usually production or dev",
+            "env_variable": "NODE_RUN_ENV",
+            "default_value": "dev",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|max:12",
             "field_type": "text"
         }
     ]

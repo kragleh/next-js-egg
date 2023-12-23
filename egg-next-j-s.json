@@ -4,7 +4,7 @@
         "version": "PTDL_v2",
         "update_url": null
     },
-    "exported_at": "2023-12-23T20:54:22+03:00",
+    "exported_at": "2023-12-23T21:15:17+03:00",
     "name": "Next JS",
     "author": "kragleh@rizn.top",
     "description": "Host a Next JS application in seconds!",
@@ -19,7 +19,7 @@
         "Nodejs 12": "ghcr.io\/parkervcp\/yolks:nodejs_12"
     },
     "file_denylist": [],
-    "startup": "if [ ! \"$(ls -A \/home\/container)\" ]; then echo -e \"\/home\/container is empty.\\ncloning files into repo\"; if [ -z ${GIT_BRANCH} ]; then echo -e \"cloning default branch\"; git clone ${GIT_URL} \/home\/container; else echo -e \"cloning ${GIT_BRANCH}'\"; git clone --single-branch --branch ${GIT_BRANCH} ${GIT_URL} \/home\/container; fi; else echo -e \"\/home\/container directory is not empty.\"; cd \/home\/container; if [ -d .git ]; then echo -e \".git directory exists\"; git reset --hard; git fetch origin; git checkout ${GIT_BRANCH}; git pull origin ${GIT_BRANCH}; else echo -e \"Not a git repository. Removing existing files and cloning again.\"; rm -rf \/home\/container\/* \/home\/container\/.* 2>\/dev\/null; if [ -n \"${USERNAME}\" ] && [ -n \"${ACCESS_TOKEN}\" ]; then GIT_URL=\"https:\/\/${USERNAME}:${ACCESS_TOKEN}@$(echo -e ${GIT_URL} | cut -d\/ -f3-)\"; fi; git clone ${GIT_URL} \/home\/container; fi; fi; if [ -f \/home\/container\/package.json ]; then \/usr\/local\/bin\/npm install; fi; \/usr\/local\/bin\/npx next ${NODE_RUN_ENV} -p {{SERVER_PORT}};",
+    "startup": "if [ ! \"$(ls -A \/home\/container)\" ]; then echo -e \"\/home\/container is empty.\\ncloning files into repo\"; if [ -z ${GIT_BRANCH} ]; then echo -e \"cloning default branch\"; git clone ${GIT_URL} \/home\/container; else echo -e \"cloning ${GIT_BRANCH}'\"; git clone --single-branch --branch ${GIT_BRANCH} ${GIT_URL} \/home\/container; fi; else echo -e \"\/home\/container directory is not empty.\"; cd \/home\/container; if [ -d .git ]; then echo -e \".git directory exists\"; git reset --hard; git fetch origin; git checkout ${GIT_BRANCH}; git pull origin ${GIT_BRANCH}; else echo -e \"Not a git repository. Removing existing files and cloning again.\"; rm -rf \/home\/container\/* \/home\/container\/.* 2>\/dev\/null; if [ -n \"${USERNAME}\" ] && [ -n \"${ACCESS_TOKEN}\" ]; then GIT_URL=\"https:\/\/${USERNAME}:${ACCESS_TOKEN}@$(echo -e ${GIT_URL} | cut -d\/ -f3-)\"; fi; git clone ${GIT_URL} \/home\/container; fi; fi; if [ -f \/home\/container\/package.json ]; then \/usr\/local\/bin\/npm install; fi; \/usr\/local\/bin\/npm run build; \/usr\/local\/bin\/npx next ${NODE_RUN_ENV} -p {{SERVER_PORT}}",
     "config": {
         "files": "{}",
         "startup": "{\r\n    \"done\": \"Compiled successfully\"\r\n}",
